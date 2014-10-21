@@ -10,8 +10,8 @@ m2 = ctl.get_host("testmachine2")
 m1.sync_resources(modules=["IcmpPing", "Netperf"])
 m2.sync_resources(modules=["IcmpPing", "Netperf"])
 
-m1_ip = m1.get_ip("test_bond")
-m2_ip = m2.get_ip("eth1")
+m1_ip = m1.get_ip("test_if")
+m2_ip = m2.get_ip("test_if")
 
 # ------
 # TESTS
@@ -23,7 +23,7 @@ ping_mod = ctl.get_module("IcmpPing",
                            options={
                                "addr" : m2_ip,
                                "count" : 10,
-                               "iface" : m1.get_devname("test_bond"),
+                               "iface" : m1.get_devname("test_if"),
                                "interval" : 0.1
                            })
 
@@ -52,9 +52,9 @@ netperf_cli_udp = ctl.get_module("Netperf",
                                   })
 for offload in offloads:
     for state in ["on", "off"]:
-        m1.run("ethtool -K %s %s %s" % (m1.get_devname("test_bond"), offload,
+        m1.run("ethtool -K %s %s %s" % (m1.get_devname("test_if"), offload,
                                         state))
-        m2.run("ethtool -K %s %s %s" % (m2.get_devname("eth1"), offload,
+        m2.run("ethtool -K %s %s %s" % (m2.get_devname("test_if"), offload,
                                         state))
         m1.run(ping_mod)
         server_proc = m1.run(netperf_srv, bg=True)
@@ -67,7 +67,7 @@ ping_mod = ctl.get_module("IcmpPing",
                            options={
                                "addr" : m1_ip,
                                "count" : 10,
-                               "iface" : m2.get_devname("eth1"),
+                               "iface" : m2.get_devname("test_if"),
                                "interval" : 0.1
                            })
 
@@ -98,9 +98,9 @@ netperf_cli_udp = ctl.get_module("Netperf",
 
 for offload in offloads:
     for state in ["on", "off"]:
-        m1.run("ethtool -K %s %s %s" % (m1.get_devname("test_bond"), offload,
+        m1.run("ethtool -K %s %s %s" % (m1.get_devname("test_if"), offload,
                                         state))
-        m2.run("ethtool -K %s %s %s" % (m2.get_devname("eth1"), offload,
+        m2.run("ethtool -K %s %s %s" % (m2.get_devname("test_if"), offload,
                                         state))
         m2.run(ping_mod)
         server_proc = m2.run(netperf_srv, bg=True)

@@ -4,7 +4,7 @@
             <interfaces>
                 <eth id="eth1" label="tnet" />
                 <eth id="eth2" label="tnet" />
-                <bond id="test_bond">
+                <bond id="test_if">
                     <options>
                         <option name="mode" value="active-backup" />
                         <option name="miimon" value="100" />
@@ -21,7 +21,7 @@
         </host>
         <host id="testmachine2">
             <interfaces>
-                <eth id="eth1" label="tnet">
+                <eth id="test_if" label="tnet">
                     <addresses>
                         <address value="192.168.0.2/24" />
                     </addresses>
