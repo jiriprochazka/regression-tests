@@ -55,56 +55,32 @@ for vlan1 in vlans:
             # These tests should pass
             # Ping between same VLANs
             if vlan1 == vlan2:
+                for state in ["on", "off"]:
                 # Offload setup
-                m1.run("ethtool -K %s %s on" % (m1.get_devname("eth1"),
-                                                offload))
-                m2.run("ethtool -K %s %s on" % (m2.get_devname("eth1"),
-                                                offload))
+                    m1.run("ethtool -K %s %s %s" % (m1.get_devname("eth1"),
+                                                    offload, state))
+                    m2.run("ethtool -K %s %s %s" % (m2.get_devname("eth1"),
+                                                    offload, state))
 
-                # Ping test
-                m1.run(ping_mod)
+                    # Ping test
+                    m1.run(ping_mod)
 
-                # Netperf test (both TCP and UDP)
-                srv_proc = m1.run(netperf_srv, bg=True)
-                ctl.wait(1)
-                m2.run(netperf_cli_tcp)
-                m2.run(netperf_cli_udp)
-                srv_proc.intr()
-
-                # Offload setup
-                m1.run("ethtool -K %s %s off" % (m1.get_devname("eth1"),
-                                                 offload))
-                m2.run("ethtool -K %s %s off" % (m2.get_devname("eth1"),
-                                                 offload))
-
-                # Ping test
-                m1.run(ping_mod)
-
-                # Netperf test (both TCP and UDP)
-                srv_proc = m1.run(netperf_srv, bg=True)
-                ctl.wait(1)
-                m2.run(netperf_cli_tcp)
-                m2.run(netperf_cli_udp)
-                srv_proc.intr()
+                    # Netperf test (both TCP and UDP)
+                    srv_proc = m1.run(netperf_srv, bg=True)
+                    ctl.wait(1)
+                    m2.run(netperf_cli_tcp)
+                    m2.run(netperf_cli_udp)
+                    srv_proc.intr()
 
             # These tests should fail
             # Ping across different VLAN
             elif vlan1 != vlan2:
-                # Offload setup
-                m1.run("ethtool -K %s %s on" % (m1.get_devname("eth1"),
-                                                offload))
-                m2.run("ethtool -K %s %s on" % (m2.get_devname("eth1"),
-                                                offload))
+                for state in ["on", "off"]:
+                    # Offload setup
+                    m1.run("ethtool -K %s %s %s" % (m1.get_devname("eth1"),
+                                                    offload, state))
+                    m2.run("ethtool -K %s %s %s" % (m2.get_devname("eth1"),
+                                                    offload, state))
 
-                # Ping test
-                m1.run(ping_mod, expect="fail")
-
-
-                # Offload setup
-                m1.run("ethtool -K %s %s off" % (m1.get_devname("eth1"),
-                                                 offload))
-                m2.run("ethtool -K %s %s off" % (m2.get_devname("eth1"),
-                                                 offload))
-
-                # Ping test
-                m1.run(ping_mod, expect="fail")
+                    # Ping test
+                    m1.run(ping_mod, expect="fail")

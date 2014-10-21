@@ -17,6 +17,8 @@ m2_ip = m2.get_ip("eth1")
 # TESTS
 # ------
 
+offloads = ["tso", "gro", "gso"]
+
 ping_mod = ctl.get_module("IcmpPing",
                            options={
                                "addr" : m2_ip,
@@ -48,13 +50,18 @@ netperf_cli_udp = ctl.get_module("Netperf",
                                       "testname" : "UDP_STREAM",
                                       "netperf_opts" : "-L %s" % m2_ip
                                   })
-
-m1.run(ping_mod)
-server_proc = m1.run(netperf_srv, bg=True)
-ctl.wait(1)
-m2.run(netperf_cli_tcp)
-m2.run(netperf_cli_udp)
-server_proc.intr()
+for offload in offloads:
+    for state in ["on", "off"]:
+        m1.run("ethtool -K %s %s %s" % (m1.get_devname("test_bond"), offload,
+                                        state))
+        m2.run("ethtool -K %s %s %s" % (m2.get_devname("eth1"), offload,
+                                        state))
+        m1.run(ping_mod)
+        server_proc = m1.run(netperf_srv, bg=True)
+        ctl.wait(1)
+        m2.run(netperf_cli_tcp)
+        m2.run(netperf_cli_udp)
+        server_proc.intr()
 
 ping_mod = ctl.get_module("IcmpPing",
                            options={
@@ -89,9 +96,15 @@ netperf_cli_udp = ctl.get_module("Netperf",
                                       "netperf_opts" : "-L %s" % m1_ip
                                   })
 
-m2.run(ping_mod)
-server_proc = m2.run(netperf_srv, bg=True)
-ctl.wait(1)
-m1.run(netperf_cli_tcp)
-m1.run(netperf_cli_udp)
-server_proc.intr()
+for offload in offloads:
+    for state in ["on", "off"]:
+        m1.run("ethtool -K %s %s %s" % (m1.get_devname("test_bond"), offload,
+                                        state))
+        m2.run("ethtool -K %s %s %s" % (m2.get_devname("eth1"), offload,
+                                        state))
+        m2.run(ping_mod)
+        server_proc = m2.run(netperf_srv, bg=True)
+        ctl.wait(1)
+        m1.run(netperf_cli_tcp)
+        m1.run(netperf_cli_udp)
+        server_proc.intr()
