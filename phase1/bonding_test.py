@@ -37,7 +37,7 @@ netperf_cli_tcp = ctl.get_module("Netperf",
                                   options = {
                                       "role" : "client",
                                       "netperf_server" : m1_ip,
-                                      "duration" : 5,
+                                      "duration" : 60,
                                       "testname" : "TCP_STREAM",
                                       "netperf_opts" : "-L %s" % m2_ip
                                 })
@@ -46,7 +46,7 @@ netperf_cli_udp = ctl.get_module("Netperf",
                                   options = {
                                       "role" : "client",
                                       "netperf_server" : m1_ip,
-                                      "duration" : 5,
+                                      "duration" : 60,
                                       "testname" : "UDP_STREAM",
                                       "netperf_opts" : "-L %s" % m2_ip
                                   })
@@ -58,9 +58,9 @@ for offload in offloads:
                                         state))
         m1.run(ping_mod)
         server_proc = m1.run(netperf_srv, bg=True)
-        ctl.wait(1)
-        m2.run(netperf_cli_tcp)
-        m2.run(netperf_cli_udp)
+        ctl.wait(2)
+        m2.run(netperf_cli_tcp, timeout=65)
+        m2.run(netperf_cli_udp, timeout=65)
         server_proc.intr()
 
 ping_mod = ctl.get_module("IcmpPing",
@@ -82,7 +82,7 @@ netperf_cli_tcp = ctl.get_module("Netperf",
                                   options = {
                                       "role" : "client",
                                       "netperf_server" : m2_ip,
-                                      "duration" : 5,
+                                      "duration" : 60,
                                       "testname" : "TCP_STREAM",
                                       "netperf_opts" : "-L %s" % m1_ip
                                   })
@@ -91,7 +91,7 @@ netperf_cli_udp = ctl.get_module("Netperf",
                                   options = {
                                       "role" : "client",
                                       "netperf_server" : m2_ip,
-                                      "duration" : 5,
+                                      "duration" : 60,
                                       "testname" : "UDP_STREAM",
                                       "netperf_opts" : "-L %s" % m1_ip
                                   })
@@ -104,7 +104,7 @@ for offload in offloads:
                                         state))
         m2.run(ping_mod)
         server_proc = m2.run(netperf_srv, bg=True)
-        ctl.wait(1)
-        m1.run(netperf_cli_tcp)
-        m1.run(netperf_cli_udp)
+        ctl.wait(2)
+        m1.run(netperf_cli_tcp, timeout=65)
+        m1.run(netperf_cli_udp, timeout=65)
         server_proc.intr()

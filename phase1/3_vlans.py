@@ -36,7 +36,7 @@ for vlan1 in vlans:
                                               "role" : "client",
                                               "netperf_server" :
                                                   m1.get_ip(vlan1),
-                                              "duration" : 180,
+                                              "duration" : 60,
                                               "testname" : "TCP_STREAM",
                                               "netperf_opts" :
                                                   "-L %s" % m2.get_ip(vlan1)
@@ -46,7 +46,7 @@ for vlan1 in vlans:
                                               "role" : "client",
                                               "netperf_server" :
                                                   m1.get_ip(vlan1),
-                                              "duration" : 180,
+                                              "duration" : 60,
                                               "testname" : "UDP_STREAM",
                                               "netperf_opts" :
                                                   "-L %s" % m2.get_ip(vlan1)
@@ -66,10 +66,10 @@ for vlan1 in vlans:
                     m1.run(ping_mod)
 
                     # Netperf test (both TCP and UDP)
-                    srv_proc = m1.run(netperf_srv, bg=True, timeout=185)
-                    ctl.wait(1)
-                    m2.run(netperf_cli_tcp, timeout=185)
-                    m2.run(netperf_cli_udp, timeout=185)
+                    srv_proc = m1.run(netperf_srv, bg=True)
+                    ctl.wait(2)
+                    m2.run(netperf_cli_tcp, timeout=65)
+                    m2.run(netperf_cli_udp, timeout=65)
                     srv_proc.intr()
 
             # These tests should fail
