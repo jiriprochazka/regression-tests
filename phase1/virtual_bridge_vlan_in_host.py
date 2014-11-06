@@ -19,7 +19,7 @@ h2.sync_resources(modules=["IcmpPing", "Netperf"])
 ping_mod = ctl.get_module("IcmpPing",
                            options={
                                "addr" : h2.get_ip("vlan10"),
-                               "count" : 10,
+                               "count" : 100,
                                "iface" : g1.get_devname("guestnic"),
                                "interval" : 0.1
                            })

@@ -22,7 +22,7 @@ offloads = ["tso", "gro", "gso"]
 ping_mod = ctl.get_module("IcmpPing",
                            options={
                                "addr" : m2_ip,
-                               "count" : 10,
+                               "count" : 100,
                                "iface" : m1.get_devname("test_if"),
                                "interval" : 0.1
                            })
@@ -66,7 +66,7 @@ for offload in offloads:
 ping_mod = ctl.get_module("IcmpPing",
                            options={
                                "addr" : m1_ip,
-                               "count" : 10,
+                               "count" : 100,
                                "iface" : m2.get_devname("test_if"),
                                "interval" : 0.1
                            })

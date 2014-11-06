@@ -22,7 +22,7 @@ for vlan1 in vlans:
         ping_mod = ctl.get_module("IcmpPing",
                                    options={
                                        "addr" : m2.get_ip(vlan2),
-                                       "count" : 10,
+                                       "count" : 100,
                                        "iface" : m1.get_devname(vlan1),
                                        "interval" : 0.1
                                    })
