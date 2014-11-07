@@ -2,8 +2,8 @@ regression-tests
 ================
 
 3 VLANs
-================
-Topology (3_vlans.xml):
+----------------
+Topology (3\_vlans.xml):
 ```
                              switch
     VLAN10                  +------+                  VLAN10
@@ -31,16 +31,16 @@ Topology (3_vlans.xml):
 Description of topology:
 2 hosts, each with one eth interface, which has 3 VLAN subinterfaces.
 
-What is tested (3_vlans.py):<br />
-    Ping: <br />
+What is tested (3\_vlans.py):
+    1. Ping:
         + count: 100
         + interval: 0.1s
         + across interfaces in same VLAN (these should pass)
         + across interfaces in different VLANs (these should fail)
-    Netperf: <br />
+    2. Netperf:
         + duration: 60s
         + TCP_STREAM and UDP_STREAM
         + across interfaces in same VLAN
-    Offloads: <br />
+    3. Offloads:
         + TSO, GRO, GSO
         + tested both on/off variants
