@@ -16,6 +16,8 @@ h2.sync_resources(modules=["IcmpPing", "Netperf"])
 # TESTS
 # ------
 
+offloads = ["gso", "gro", "tso"]
+
 ping_mod = ctl.get_module("IcmpPing",
                            options={
                                "addr" : h2.get_ip("vlan10"),
@@ -49,10 +51,16 @@ netperf_cli_udp = ctl.get_module("Netperf",
                                                             h2.get_ip("vlan10")
                                   })
 
-g1.run(ping_mod)
-server_proc = g1.run(netperf_srv, bg=True)
-ctl.wait(2)
-h2.run(netperf_cli_tcp, timeout=65)
-h2.run(netperf_cli_udp, timeout=65)
+for offload in offloads:
+    for state in ["on", "off"]:
+            g1.run("ethtool -K %s %s %s" % (g1.get_devname("guestnic"),
+                                            offload, state))
+            h2.run("ethtool -K %s %s %s" % (h2.get_devname("nic"),
+                                            offload, state))
+            g1.run(ping_mod)
+            server_proc = g1.run(netperf_srv, bg=True)
+            ctl.wait(2)
+            h2.run(netperf_cli_tcp, timeout=65)
+            h2.run(netperf_cli_udp, timeout=65)
 
-server_proc.intr()
+            server_proc.intr()
